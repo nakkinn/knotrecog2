@@ -27,38 +27,47 @@ function setup(){
 
     canvas = createCanvas(640,640);
     //canvas = createCanvas(windowWidth, windowHeight);
-    rectMode(CENTER);
 
     //ファイル入力
     input1 = createFileInput(inputevent);
     input1.position(20,420);
 
-    input2 = createInput();
-    input2.style('width','40px');
-    input2.value('8');
-    input2.position(80, 455);
-
+    
     // slider1 = createSlider(30,100,50);
     // slider1.position(20, 455);
     // slider1.changed(sliderevent);
 
-    button1 = createButton('細線化');
-    button1.position(20, 485);
+    button1 = createButton('細線化（はじめから）');
+    button1.position(20, 452);
     button1.mousePressed(button1event);
 
-    button2 = createButton('短い線を削除');
-    button2.position(85, 485);
+    input2 = createInput();
+    input2.style('width','40px');
+    input2.value('8');
+    input2.position(20, 484);
+
+    button2 = createButton('px以下の線を削除');
+    button2.position(65, 482);
     button2.mousePressed(button2event);
 
-    button3 = createButton('不変量の算出');
-    button3.position(180, 485);
+    button3 = createButton('ポイントリストに変換');
+    button3.position(20, 512);
     button3.mousePressed(button3event);
 
-    background(240);
+    input3 = createInput();
+    input3.style('width','40px');
+    input3.value('7');
+    input3.position(20, 544);
 
-    noStroke();
-    fill(0);
-    text('長さ', 20, 455);
+    button4 = createButton('以下の切れ目をつなぐ');
+    button4.position(65, 542);
+    button4.mousePressed(button4event);
+
+    button5 = createButton('不変量の算出');
+    button5.position(20, 572);
+    button5.mousePressed(button5event);
+
+    background(240);
 
     // defimg.resize(300,300);
     // image(defimg, 0, 0);
@@ -71,6 +80,7 @@ function draw(){
 
     if(mode==1){    //ファイル入力
 
+        background(240);
         image(inputimg, 0, 0);
         mode = 2;
 
@@ -87,8 +97,6 @@ function draw(){
         for(let i=0; i<pix.length; i++)    for(let j=0; j<pix[0].length; j++){
             pix[i][j] = brightness(canvas.get(j,i));
         }
-
-        background(240);
 
         //グレイ画像
         for(let i=0; i<pix.length; i++) for(let j=0; j<pix[i].length; j++){
@@ -147,7 +155,7 @@ function inputevent(file){
 
 //細線化　三又削除　点削除
 function button1event(){
-    if(mode==3){
+    if(mode>=3){
 
         pix_hoso = newhososenka(pix);
 
@@ -174,7 +182,7 @@ function button2event(){
 
     if(mode==4){
 
-        deleteShortArc(pix_hoso, 10);
+        deleteShortArc(pix_hoso, Number(input2.value()));
         
         translate(320, 0);
 
@@ -188,72 +196,120 @@ function button2event(){
     }
 }
 
+//ポイントリストに変換
 function button3event(){
-    
-    plist = pix2plist(pix_hoso);
 
-    kireme(7);
+    if(mode>=4){
 
-    push();
-    translate(360, 360);
-    stroke(0);
-    for(let i=0; i<plist.length; i++)   for(let j=0; j<plist[i].length-1; j++){
-        line(plist[i][j][0], plist[i][j][1], plist[i][j+1][0], plist[i][j+1][1]);
-    }
-    pop();
+        plist = pix2plist(pix_hoso);
 
-    arrow = pairing2(plist);
+        push();
+        translate(320, 0);
+        noStroke();
+        fill(255);
+        rect(0, 0, pix[0].length, pix.length);
 
-    plist = sortplist(plist, arrow);
+        stroke(0);
+        strokeWeight(2);
 
-    let crossinfo = split2(plist);
-
-    let dowker = cross2dowker(crossinfo, 0, false);
-
-    noStroke();
-    fill(0);
-
-    text('ドーカーコード',10,530);
-    text(dowker, 10, 550);
-
-    stroke(255, 0, 0);
-    for(let i=0; i<arrow.length; i++)   line(320+arrow[i][1], arrow[i][0], 320+arrow[i][3], arrow[i][2]);
-
-    //ドーカーコードチェック
-    let errorflag = false;
-    for(let i=0; i<dowker.length; i++){
-        if(isNaN(dowker[i]))    errorflag = true;
-        if(dowker[i] % 2 == 1)  errorflag = true;
-    }
-
-    noStroke();
-    if(errorflag){
-        fill(255, 0, 0);
-        text('エラー1', 10, 610);
-    }
-
-    if(!errorflag){
-        let alex = dok2alex(dowker);
-        text('アレキサンダー多項式',10,570);
-        text(alex, 10, 590);
-
-        if(dowker.length<14){
-            let jones = dok2jones(dowker);
-
-            text('ジョーンズ多項式',10,610);
-            text(jones, 10, 630);
-        
-            text('結び目候補', 320 ,530);
-            text(findknot(dowker),320,550);
-
+        for(let i=0; i<plist.length; i++){
+            for(let j=0; j<plist[i].length-1; j++){
+                line(plist[i][j][1], plist[i][j][0], plist[i][j+1][1], plist[i][j+1][0]);
+            }
         }
 
-    }
+        pop();
 
+        strokeWeight(1);
+
+        mode = 6;
+
+    }
 }
 
+//切れ目をなくす
+function button4event(){
+    if(mode==6){
 
+        kireme(Number(input3.value()));
 
+        push();
+        translate(320, 0);
+        noStroke();
+        fill(255);
+        rect(0, 0, pix[0].length, pix.length);
+
+        stroke(0);
+        strokeWeight(2);
+
+        for(let i=0; i<plist.length; i++){
+            for(let j=0; j<plist[i].length-1; j++){
+                line(plist[i][j][1], plist[i][j][0], plist[i][j+1][1], plist[i][j+1][0]);
+            }
+        }
+
+        pop();
+        strokeWeight(1);
+    }
+}
+
+//不変量の算出
+function button5event(){
+    
+    if(mode==6){
+
+        let arrow = pairing2(plist);
+        plist = sortplist(plist, arrow);
+
+        let crossinfo = split2(plist);
+        let dowker = cross2dowker(crossinfo, 0, false);
+
+        stroke(255, 0, 0);
+        for(let i=0; i<arrow.length; i++)   line(320+arrow[i][1], arrow[i][0], 320+arrow[i][3], arrow[i][2]);
+
+        push();
+        translate(220, -60);
+
+        noStroke();
+        fill(0);
+
+        text('ドーカーコード',10,530);
+        text(dowker, 10, 550);
+
+        //ドーカーコードチェック
+        let errorflag = false;
+        for(let i=0; i<dowker.length; i++){
+            if(isNaN(dowker[i]))    errorflag = true;
+            if(dowker[i] % 2 == 1)  errorflag = true;
+        }
+
+        noStroke();
+        if(errorflag){
+            fill(255, 0, 0);
+            text('エラー1', 10, 610);
+        }
+
+        if(!errorflag){
+            let alex = dok2alex(dowker);
+            text('アレキサンダー多項式',10,570);
+            text(alex, 10, 590);
+
+            if(dowker.length<14){
+                let jones = dok2jones(dowker);
+
+                text('ジョーンズ多項式',10,610);
+                text(jones, 10, 630);
+            
+                // text('結び目候補', 260 ,530);
+                // text(findknot(dowker),260,550);
+
+            }
+        }
+
+        pop();
+
+    }
+}
 
 
 
@@ -1061,15 +1117,15 @@ function deleteBranch2(arg){
         if(endCount(newpix[i])!=endc+2) sougo_error[i] = 999;
     }
 
-    background(255);
-    noStroke();
-    let index = 8;
-    for(let i=1; i<newpix[index].length-1; i++)    for(let j=1; j<newpix[index][0].length-1; j++){
-        if(newpix[index][i][j]==0)    fill(255);
-        if(arg[i][j]==1)    fill(100,100,255);
-        if(newpix[index][i][j]==1)    fill(0);
-        rect(i, j, 1);
-    }
+    // background(255);
+    // noStroke();
+    // let index = 8;
+    // for(let i=1; i<newpix[index].length-1; i++)    for(let j=1; j<newpix[index][0].length-1; j++){
+    //     if(newpix[index][i][j]==0)    fill(255);
+    //     if(arg[i][j]==1)    fill(100,100,255);
+    //     if(newpix[index][i][j]==1)    fill(0);
+    //     rect(i, j, 1);
+    // }
 
     //うまくいっているものは９つのうち１つだけであることを確認
     let cou0 = 0, cou1 = 0, m0, m1;
