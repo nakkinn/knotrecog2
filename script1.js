@@ -43,7 +43,7 @@ function setup(){
 
     input2 = createInput();
     input2.style('width','40px');
-    input2.value('8');
+    input2.value('12');
     input2.position(20, 484);
 
     button2 = createButton('px以下の線を削除');
@@ -180,7 +180,7 @@ function button1event(){
 //短いアーク削除
 function button2event(){
 
-    if(mode==4){
+    if(mode>=4){
 
         deleteShortArc(pix_hoso, Number(input2.value()));
         
@@ -338,6 +338,8 @@ function nitika_auto(){
         }
     }
 
+    console.log(listm);
+
     let tmp = listm.length;
     for(let k=0; k<tmp-2; k++){
         let listd = [];
@@ -345,6 +347,8 @@ function nitika_auto(){
         let index = listd.indexOf(Math.min(...listd));
         listm.splice(index, 1);
     }
+
+    console.log((listm[0]+listm[1])/2);
 
     for(let i=0; i<pix.length; i++) for(let j=0; j<pix[0].length; j++){
         if(pix[i][j] > (listm[0]+listm[1])/2)   pix[i][j] = 0;
@@ -1886,18 +1890,20 @@ function dok2jones(code){
 
     let listd = [];
     let hineri = 0;
+    let hineriex;
 
     for(let i=0; i<coder.length; i++){
         hineri += coder[i][1];
     }
-    hineri*=-3;
+    hineriex=-3*hineri;
 
     for(let k=0; k<listc.length; k++){
         let n1 = listc[k][1]-1;
         for(let i=0; i<=n1; i++){
-            listd.push([(-1)**(n1-1)*combination(n1,i)*listc[k][2], 2*n1-4*i+listc[k][0]+hineri]);
+            listd.push([(-1)**(n1+abs(hineri))*combination(n1,i)*listc[k][2], 2*n1-4*i+listc[k][0]+hineriex]);
         }
     }
+
 
     listd.sort(function(a,b){return b[1]-a[1]});
 
