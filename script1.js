@@ -43,6 +43,8 @@ imgElement.onload = function() {
     for(let i=0; i<pix.length; i++) for(let j=0; j<pix[0].length; j++){
         pix[i][j] = 1 - niti.ucharAt(i, j)/255;
     }
+    anaume();
+    deleteDot(pix);
 
     mode = 1;
 
