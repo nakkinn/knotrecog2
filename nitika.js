@@ -21,6 +21,7 @@ function setup(){
     }
 
     noStroke();
+
     // for(let i=0; i<mat1.length; i++)    for(let j=0; j<mat1[0].length; j++){
     //     fill(mat1[i][j]*2.55);
     //     rect(j*1, i*1, 1);
@@ -30,7 +31,7 @@ function setup(){
     for(let i=0; i<mat2.length; i++)    mat2[i] = new Array(img.width);
     for(let i=0; i<mat2.length; i++)    for(let j=0; j<mat2[0].length; j++)    mat2[i][j] = 0;
 
-    let a1 = 15;
+    let a1 = 10;
 
     for(let i=0; i<mat2.length-1; i++)  for(let j=0; j<mat2[0].length-1; j++){
         if(mat1[i][j]-mat1[i][j+1]>a1)  mat2[i][j+1] = 1;
