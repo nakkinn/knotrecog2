@@ -96,7 +96,7 @@ function setup(){
 
     textarea.position(300,650);
 
-    background(240);
+    background(255);
 
 }
 
@@ -104,6 +104,9 @@ function setup(){
 function draw(){
 
     if(mode==1){
+        background(255);
+        textarea.value('');
+
         noStroke();
         fill(0);
         for(let i=0; i<pix.length; i++) for(let j=0; j<pix[0].length; j++){
@@ -263,10 +266,17 @@ function button5event(){
                 jones = dok2jones(dowker);
 
                 str += 'ジョーンズ多項式\n';
-                str += jones + '\n';
-                str += mirrorpol(jones) + '\n';
-                //console.log(mirrorpol(jones));
-                console.log(findknot2(alex,jones));
+                str += jones + '\n\n';
+
+                let kouho = findknot(dowker);
+
+                if(kouho.length>0){
+                    str += '結び目候補\n'
+                    for(let i=0; i<kouho.length; i++){
+                        str += kouho[i];
+                        if(i!=kouho.length-1)   str += ', ';
+                    }
+                }
             }
         }
 
