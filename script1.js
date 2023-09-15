@@ -11,7 +11,7 @@ let button1;
 let button2;
 let button3;
 
-let canvas;
+let textarea;
 
 let plist;
 
@@ -53,27 +53,12 @@ imgElement.onload = function() {
 
 }
 
-// let defimg;
-
-// function preload(){
-//     defimg = loadImage('images/20230905_063016272_iOS.jpg');
-// }
 
 function setup(){
 
 
 
     canvas = createCanvas(840,840);
-    //canvas = createCanvas(windowWidth, windowHeight);
-
-    //ファイル入力
-    // input1 = createFileInput(inputevent);
-    // input1.position(20,420);
-
-    
-    // slider1 = createSlider(30,100,50);
-    // slider1.position(20, 455);
-    // slider1.changed(sliderevent);
 
     button1 = createButton('細線化（はじめから）');
     button1.position(20, 652);
@@ -105,58 +90,18 @@ function setup(){
     button5.position(20, 772);
     button5.mousePressed(button5event);
 
-    background(240);
+    textarea = createElement('textarea');
+    textarea.style('width','500px');
+    textarea.style('height','200px');
 
-    // defimg.resize(300,300);
-    // image(defimg, 0, 0);
-    //mode = 2;
+    textarea.position(300,650);
+
+    background(240);
 
 }
 
 
 function draw(){
-
-    // if(mode==1){    //ファイル入力
-
-    //     background(240);
-    //     image(inputimg, 0, 0);
-    //     mode = 2;
-
-    // }else   if(mode==2){
-
-    //     //ファイル入力
-    //     pix = new Array(inputimg.height);
-    //     for(let i=0; i<pix.length; i++) pix[i] = new Array(int(inputimg.width));
-
-    //     //プログラム埋め込み
-    //     // pix = new Array(300);
-    //     // for(let i=0; i<300; i++)    pix[i] = new Array(300);
-
-    //     for(let i=0; i<pix.length; i++)    for(let j=0; j<pix[0].length; j++){
-    //         pix[i][j] = brightness(canvas.get(j,i));
-    //     }
-
-    //     //グレイ画像
-    //     for(let i=0; i<pix.length; i++) for(let j=0; j<pix[i].length; j++){
-    //         stroke(pix[i][j] * 2.55);
-    //         rect(j, i, 1);
-    //     }
-
-    //     nitika_auto();
-
-    //     anaume();
-
-    //     //二値化画像
-    //     translate(320, 0);
-    //     noStroke();
-    //     for(let i=0; i<pix.length; i++) for(let j=0; j<pix[i].length; j++){
-    //         if(pix[i][j]==1)   fill(0);
-    //         else    fill(255);
-    //         rect(j, i, 1);
-    //     }
-
-    //     mode = 3;
-    // }
 
     if(mode==1){
         noStroke();
@@ -295,14 +240,9 @@ function button5event(){
         stroke(255, 0, 0);
         for(let i=0; i<arrow.length; i++)   line(420+arrow[i][1], arrow[i][0], 420+arrow[i][3], arrow[i][2]);
 
-        push();
-        translate(220, 120);
-
-        noStroke();
-        fill(0);
-
-        text('ドーカーコード',10,530);
-        text(dowker, 10, 550);
+        let str = ''
+        str += 'ドーカーコード\n';
+        str += dowker + '\n\n';
 
         //ドーカーコードチェック
         let errorflag = false;
@@ -311,46 +251,31 @@ function button5event(){
             if(dowker[i] % 2 == 1)  errorflag = true;
         }
 
-        noStroke();
         if(errorflag){
-            fill(255, 0, 0);
-            text('エラー1', 10, 610);
-        }
-
-        if(!errorflag){
-            let alex = dok2alex(dowker);
-            text('アレキサンダー多項式',10,570);
-            text(alex, 10, 590);
+            str += 'エラー1\n';
+        }else{
+            let alex, jones;
+            alex = dok2alex(dowker);
+            str += 'アレキサンダー多項式\n';
+            str += alex + '\n\n'; 
 
             if(dowker.length<14){
-                let jones = dok2jones(dowker);
+                jones = dok2jones(dowker);
 
-                text('ジョーンズ多項式',10,610);
-                text(jones, 10, 630);
-            
-                // text('結び目候補', 260 ,530);
-                // text(findknot(dowker),260,550);
-
+                str += 'ジョーンズ多項式\n';
+                str += jones + '\n';
+                str += mirrorpol(jones) + '\n';
+                //console.log(mirrorpol(jones));
+                console.log(findknot2(alex,jones));
             }
         }
 
-        pop();
+        textarea.value(str);
 
     }
 }
 
 
-// function inputevent(file){
-//     if(file.type=='image'){
-//         inputimg = createImg(file.data, '', function(){
-//             let ratio = inputimg.height / inputimg.width;
-//             inputimg.width = int( min(300, 300*inputimg.width/inputimg.height) );
-//             inputimg.height = int( inputimg.width * ratio );
-//             mode = 1;
-//         });
-//         inputimg.hide();
-//     }
-// }
 
 
 
