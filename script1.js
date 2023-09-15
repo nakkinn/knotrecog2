@@ -27,7 +27,7 @@ imgElement.onload = function() {
     let src = cv.imread(imgElement);
 
     //サイズ調整
-    let ratio = 300 / Math.max(src.matSize[0], src.matSize[1]);
+    let ratio = 400 / Math.max(src.matSize[0], src.matSize[1]);
     cv.resize(src, src, new cv.Size(src.matSize[1]*ratio, src.matSize[0]*ratio));
 
     let niti = new cv.Mat();
@@ -63,7 +63,7 @@ function setup(){
 
 
 
-    canvas = createCanvas(640,640);
+    canvas = createCanvas(840,840);
     //canvas = createCanvas(windowWidth, windowHeight);
 
     //ファイル入力
@@ -76,33 +76,33 @@ function setup(){
     // slider1.changed(sliderevent);
 
     button1 = createButton('細線化（はじめから）');
-    button1.position(20, 452);
+    button1.position(20, 652);
     button1.mousePressed(button1event);
 
     input2 = createInput();
     input2.style('width','40px');
     input2.value('12');
-    input2.position(20, 484);
+    input2.position(20, 684);
 
     button2 = createButton('px以下の線を削除');
-    button2.position(65, 482);
+    button2.position(65, 682);
     button2.mousePressed(button2event);
 
     button3 = createButton('ポイントリストに変換');
-    button3.position(20, 512);
+    button3.position(20, 712);
     button3.mousePressed(button3event);
 
     input3 = createInput();
     input3.style('width','40px');
     input3.value('7');
-    input3.position(20, 544);
+    input3.position(20, 744);
 
     button4 = createButton('以下の切れ目をつなぐ');
-    button4.position(65, 542);
+    button4.position(65, 742);
     button4.mousePressed(button4event);
 
     button5 = createButton('不変量の算出');
-    button5.position(20, 572);
+    button5.position(20, 772);
     button5.mousePressed(button5event);
 
     background(240);
@@ -194,7 +194,7 @@ function button1event(){
 
         deleteDot(pix_hoso);
 
-        translate(320, 0);
+        translate(420, 0);
 
         for(let i=0; i<pix.length; i++) for(let j=0; j<pix[i].length; j++){
             if(pix_hoso[i][j])   stroke(0);
@@ -213,7 +213,7 @@ function button2event(){
 
         deleteShortArc(pix_hoso, Number(input2.value()));
         
-        translate(320, 0);
+        translate(420, 0);
 
         for(let i=0; i<pix.length; i++) for(let j=0; j<pix[i].length; j++){
             if(pix_hoso[i][j])   stroke(0);
@@ -232,7 +232,7 @@ function button3event(){
         plist = pix2plist(pix_hoso);
 
         push();
-        translate(320, 0);
+        translate(420, 0);
         noStroke();
         fill(255);
         rect(0, 0, pix[0].length, pix.length);
@@ -262,7 +262,7 @@ function button4event(){
         kireme(Number(input3.value()));
 
         push();
-        translate(320, 0);
+        translate(420, 0);
         noStroke();
         fill(255);
         rect(0, 0, pix[0].length, pix.length);
@@ -293,10 +293,10 @@ function button5event(){
         let dowker = cross2dowker(crossinfo, 0, false);
 
         stroke(255, 0, 0);
-        for(let i=0; i<arrow.length; i++)   line(320+arrow[i][1], arrow[i][0], 320+arrow[i][3], arrow[i][2]);
+        for(let i=0; i<arrow.length; i++)   line(420+arrow[i][1], arrow[i][0], 420+arrow[i][3], arrow[i][2]);
 
         push();
-        translate(220, -60);
+        translate(220, 120);
 
         noStroke();
         fill(0);
